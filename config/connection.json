@@ -1,0 +1,15 @@
+{
+    "port"       : 2540,
+    "server"    : "192.168.90.69",
+    "user"      : "sa",
+    "password"  : "@g0r@0ununc@", 
+    "database"  : "BDRafael",
+    "stream"    : false,
+    "options": {
+      "trustedConnection"       : false,
+      "encrypt"                 : false,
+      "enableArithAbort"        : false,
+      "trustServerCertificate"  : false    
+    }
+  } 
+  
