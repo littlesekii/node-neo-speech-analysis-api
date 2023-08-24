@@ -11,7 +11,10 @@ const chamadasRoute = require('./routes/chamadas');
 const analisarRoute = require('./routes/analisar');
 const queryRoute = require('./routes/query');
 
-app.use(express.json()); 
+app.use(express.json());
+app.use(express.text());
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
+app.use(express.json({limit: '50mb'}));
 
 app.use(cors({ origin: '*' }));
 

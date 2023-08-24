@@ -20,12 +20,15 @@ router.get("/", async (req, res) => {
 
   const chamadas = await retornaChamadasOperador(cOperador);
 
+  if(!chamadas){
+    res.status(500).send("Erro ao retornar as chamadas do operador!");
+    return
+  }
+
   res.json(chamadas)  
 })
 
-async function retornaChamadasOperador(cOperador) {
-
-  let retorno;
+async function retornaChamadasOperador(cOperador) {  
 
   try {
     let result = await global.conn
@@ -33,21 +36,22 @@ async function retornaChamadasOperador(cOperador) {
       .input("cOperador", sql.Int, cOperador)
       .execute("s_Speech_Analysis_Retorna_Chamadas_Operador");
       
-      if (result.recordsets) {
-        retorno = result.recordsets
+      if (result.recordset) {
+        return result.recordset
+      } else {
+        return null
       }
 
   } catch (error) {
+    return null
     console.log(error)
-  }
-
-  return retorno;
+  }  
 }
 
 router.get("/:id", async (req, res) => {
 
   const { id } = req.params
-  const { loginUsuario } = req.body
+  const { loginUsuario } = req.query
 
   if(!id) {
     res.status(400).send("Preencha todos os campos!");
@@ -59,24 +63,21 @@ router.get("/:id", async (req, res) => {
     let result = await retornaChamada(loginUsuario, id);
 
     let detalhesChamada = result[0][0];
-    let analisesChamada = result[1];
+    let analisesChamada = result[1]; 
+    let textoChamada = result[2][0].textoChamada;
 
     analisesChamada = analisesChamada.map(item => {
       item.value = (item.tipoRetorno == "JSON") ? JSON.parse(item.value) : item.value
       return item
     })
 
-    const chamada = {};
+    detalhesChamada.textoChamada = textoChamada
+    detalhesChamada.perguntasPadroes = analisesChamada.filter(item => item.indice != 1)
+    detalhesChamada.humorAtendente = analisesChamada[0].value.atendente
+    detalhesChamada.humorCliente = analisesChamada[0].value.cliente
 
-    chamada.detalhes = detalhesChamada;
-    chamada.analises = analisesChamada;
 
-    // ;
-    // let analises = result[1];
-
-    console.log(chamada);
-
-    res.json(chamada)
+    res.json(detalhesChamada)
 
   } catch (error) {
     res.status(500).send(error)

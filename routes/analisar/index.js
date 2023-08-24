@@ -12,17 +12,25 @@ sql
 
 router.post("/", async (req, res) => {
 
+  console.log('rodou')
+
   const { cChamada } = req.body;
 
   if(!cChamada) {
+    console.log('preenchaa')
     res.status(400).send("Preencha todos os campos!");
     return
   }
 
   const parametrosAnaliseChamada = await retornaParametrosAnaliseChamada(cChamada);
 
+  console.log(parametrosAnaliseChamada)
+
   // console.log(parametrosAnaliseChamada)
   if (parametrosAnaliseChamada) {
+
+    res.status(200).send("Chamada analisada com sucesso!") 
+    
     try {
       const falas = parametrosAnaliseChamada[0];
       const perguntas = parametrosAnaliseChamada[1];
@@ -77,11 +85,12 @@ router.post("/", async (req, res) => {
         
         await insereRespostaAnaliseChamada(cChamada, codigoPergunta, resposta)
       }
-    } catch {
-      res.status(400).send("Erro ao analisar chamada!") 
+    } catch (e) {
+      console.log(e)
+      return
+      // res.status(400).send("Erro ao analisar chamada!") 
     }
-
-    res.status(200).send("Chamada analisada com sucesso!")  
+ 
   } else
     res.status(400).send("Erro ao analisar chamada!")  
 })

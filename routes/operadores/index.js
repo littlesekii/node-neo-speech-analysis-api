@@ -32,8 +32,8 @@ async function retornaOperadores(pesquisa) {
       .input("pesquisa", sql.VarChar(8000), pesquisa ? pesquisa : "")
       .execute("s_Speech_Analysis_Retorna_Operadores");
       
-      if (result.recordsets) {
-        retorno = result.recordsets
+      if (result?.recordsets) {
+        retorno = result.recordset
       }
 
   } catch (error) {

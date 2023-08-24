@@ -45,8 +45,10 @@ router.post("/", async (req, res) => {
 
     insereMensagemChat(cLogin, cChamada, pergunta);
 
+    const response = {};
+    response.resposta = result;
     // console.log(result);
-    res.json(result);
+    res.json(response);
     
   } catch (error) {
     res.status(500).send(error)
