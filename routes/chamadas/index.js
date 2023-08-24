@@ -47,7 +47,7 @@ async function retornaChamadasOperador(cOperador) {
 router.get("/:id", async (req, res) => {
 
   const { id } = req.params
-  const { cLogin } = req.body
+  const { loginUsuario } = req.body
 
   if(!id) {
     res.status(400).send("Preencha todos os campos!");
@@ -56,7 +56,26 @@ router.get("/:id", async (req, res) => {
 
   try {      
 
-    let chamada = await retornaChamada(cLogin, id);
+    let result = await retornaChamada(loginUsuario, id);
+
+    let detalhesChamada = result[0][0];
+    let analisesChamada = result[1];
+
+    analisesChamada = analisesChamada.map(item => {
+      item.value = (item.tipoRetorno == "JSON") ? JSON.parse(item.value) : item.value
+      return item
+    })
+
+    const chamada = {};
+
+    chamada.detalhes = detalhesChamada;
+    chamada.analises = analisesChamada;
+
+    // ;
+    // let analises = result[1];
+
+    console.log(chamada);
+
     res.json(chamada)
 
   } catch (error) {
@@ -65,18 +84,18 @@ router.get("/:id", async (req, res) => {
 
 })
 
-async function retornaChamada(cLogin, cChamada) {
+async function retornaChamada(loginUsuario, cChamada) {
 
   let retorno = [];
 
   try {
     let result = await global.conn
       .request()
-      .input("cLogin", sql.Int, cLogin ? cLogin : 0)
+      .input("loginUsuario", sql.VarChar(100), loginUsuario ? loginUsuario : 0)
       .input("cChamada", sql.Int, cChamada ? cChamada : 0)
       .execute("s_Speech_Analysis_Retorna_Chamada");
       
-      retorno = result.recordsets[0]
+      retorno = result.recordsets
 
   } catch (error) {
     console.log(error)

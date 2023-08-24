@@ -12,17 +12,18 @@ sql
 
 router.post("/", async (req, res) => {
   const {
-    pergunta,
-    textoChamada
+    cLogin,
+    cChamada,
+    textoChamada,
+    pergunta
   } = req.body;  
 
-  if(!pergunta || !textoChamada) {
+  if(!cLogin || !cChamada || !pergunta || !textoChamada) {
     res.status(400).send("Preencha todos os campos!");
   }
 
   try {
-
-    console.log(pergunta, textoChamada)
+    
     //O usuário está analisando a ligação para validar se houve um bom atendimento.
 
     const PROMPT = `
@@ -42,7 +43,9 @@ router.post("/", async (req, res) => {
 
     const result = await ai.ask(PROMPT);
 
-    console.log(result);
+    insereMensagemChat(cLogin, cChamada, pergunta);
+
+    // console.log(result);
     res.json(result);
     
   } catch (error) {
@@ -50,5 +53,20 @@ router.post("/", async (req, res) => {
   }
 
 })
+
+async function insereMensagemChat(cLogin, cChamada, mensagem) {
+  try {
+    let result = await global.conn
+      .request()
+      .input("cLogin", sql.Int, cLogin)
+      .input("cChamada", sql.Int, cChamada)
+      .input("mensagem", sql.VarChar(8000), mensagem)
+      .execute("s_Speech_Analysis_Insere_Mensagem_Chat");
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
 
 module.exports = router;
