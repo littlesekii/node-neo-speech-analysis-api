@@ -7,7 +7,7 @@ const port = 3333;
 const mainRoute = require('./routes/main');
 const operadoresRoute = require('./routes/operadores');
 const chamadasRoute = require('./routes/chamadas');
-
+const fileViewer = require('./routes/fileViewer');
 const analisarRoute = require('./routes/analisar');
 const queryRoute = require('./routes/query');
 
@@ -22,7 +22,7 @@ app.use("/", mainRoute);
 
 app.use("/operadores", operadoresRoute)
 app.use("/chamadas", chamadasRoute)
-
+app.use("/arquivos", fileViewer)
 app.use("/analisar", analisarRoute)
 app.use("/query", queryRoute);
           

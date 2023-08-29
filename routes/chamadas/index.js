@@ -64,7 +64,14 @@ router.get("/:id", async (req, res) => {
 
     let detalhesChamada = result[0][0];
     let analisesChamada = result[1]; 
-    let textoChamada = result[2][0].textoChamada;
+    let falas = result[2];
+
+    let textoChamada = '';
+    let lineBreak = String.fromCharCode(13) + String.fromCharCode(10);
+
+      for(let i = 0; i < falas.length; i++) {
+        textoChamada += falas[i].fala + lineBreak + lineBreak;
+      }
 
     analisesChamada = analisesChamada.map(item => {
       item.value = (item.tipoRetorno == "JSON") ? JSON.parse(item.value) : item.value

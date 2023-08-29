@@ -35,7 +35,7 @@ router.post("/", async (req, res) => {
       const falas = parametrosAnaliseChamada[0];
       const perguntas = parametrosAnaliseChamada[1];
       const humores = parametrosAnaliseChamada[2][0].humores;
-      console.log(humores)
+      // console.log(humores)
 
       let textoChamada = '';
 
@@ -64,6 +64,8 @@ router.post("/", async (req, res) => {
       const humorcliente = json[`humorCliente`];
       const problemaResolvido = json[`problemaResolvido`];
 
+      console.log(json) 
+
       await insereAnaliseChamada(cChamada, humorAtendente, humorcliente, problemaResolvido)
 
       for (let i = 0; i < perguntas.length; i++) {
@@ -74,7 +76,7 @@ router.post("/", async (req, res) => {
 
         switch (formatoResposta) {
           case 'JSON':
-            resposta = JSON.stringify(resposta);
+            resposta = String(resposta);
             break;
           case 'Boolean':
             resposta = String(resposta);
